@@ -35,8 +35,10 @@ class Metrix(object):
         logits = convert_to_numpy(logits)
         answer = convert_to_numpy(answer)
 
-        logits[logits>self.threshold]=1
+        logits[logits>=self.threshold]=1
+        logits[logits < self.threshold]=-1
         match = np.count_nonzero(answer==logits)
+        logits[logits < self.threshold] = 0
         self.match+= match
         self.pred_num+=np.count_nonzero(logits)
         self.gold_num+=np.count_nonzero(answer)
@@ -51,7 +53,7 @@ class Metrix(object):
 
         return p,r,f1
 
-def dev(model,dataloader,threshold):
+def evaluate(model,dataloader,threshold):
     """"dev函数装饰器"""
 
     model.eval()
@@ -74,8 +76,9 @@ def train(model, opt, args):
     best_f1 = 0
     step = 0
     best_step = -1
-    p,r,best_f1 = dev(model,args.dev_iter,args.threshold)
-    loss_fn = nn.BCELoss(reduction='sum')
+    p,r,best_f1 = evaluate(model,args.dev_iter,args.threshold)
+    print(p,r,best_f1)
+    loss_fn = nn.BCELoss(reduction="none")
     for i in range(args.epoch):
         if args.sampler is not None:
             args.sampler.set_epoch(i)
@@ -84,9 +87,12 @@ def train(model, opt, args):
             input_ids, segment_id, attn_masks, answers = batch
             logits = model(input_ids, segment_id, attn_masks)
             step += 1
-            loss = loss_fn(logits, answers) / logits.shape[0]
-            #weight = args.golden_weight*answers+torch.ones(answers.shape).to(answers.device)
-            #loss = loss*weight
+            loss = loss_fn(logits, answers)
+
+            weight = torch.ones(logits.shape).to(logits.device)
+            weight[logits>args.threshold] = args.loss_weight
+
+            loss = (loss*weight).sum()/ logits.shape[0]
             loss.backward()
             opt.step()
             model.zero_grad()
@@ -99,7 +105,7 @@ def train(model, opt, args):
                     f.write(loss_log + '\n')
                 print(loss_log)
             if step % args.eval_step == 0:
-                role_p, role_r, role_f1 = dev(model,args.dev_iter,args.threshold)
+                role_p, role_r, role_f1 = evaluate(model,args.dev_iter,args.threshold)
                 dev_log = f'【dev】step: {step}, p: {role_p:.6f}, r: {role_r:.6f}, f1: {role_f1:.6f}, prior best f1: {best_f1:.6f} '
                 print(dev_log)
                 with open(args.save_path / "log.txt", 'a') as f:
@@ -206,18 +212,18 @@ if __name__ == '__main__':
     parser.add_argument('--encoder_path', help='Pre-train model path.', default='../roberta')
 
     parser.add_argument('--save_path', help='Checkpoint save path.', default='save')
-    parser.add_argument('--load_ckpt', help='Load checkpoint path.', default='')
+    parser.add_argument('--load_ckpt', help='Load checkpoint path.', default='save/best.pth')
 
-    parser.add_argument('--golden_weight',help='weight parameter of the golden label',type=float,default=10)
-    parser.add_argument('--max_len', help='Max sequence length.', type=int, default=320)
-    parser.add_argument('--batch_size', type=int, default=4)
-    parser.add_argument('--epoch', type=int, default=40)
+    parser.add_argument('--loss_weight',help='weight parameter of the predicted label',type=float,default=30)
+    parser.add_argument('--max_len', help='Max sequence length.', type=int, default=240)
+    parser.add_argument('--batch_size', type=int, default=32)
+    parser.add_argument('--epoch', type=int, default=240)
     parser.add_argument('--warmup_ratio', type=float, default=0.1)
-    parser.add_argument('--lr', type=float, default=3e-5)
+    parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--eval_step', type=int, default=400)
     parser.add_argument('--threshold', type=float, default=0.5)
 
-    parser.add_argument('--gpus', nargs='+', type=int, default=[0])
+    parser.add_argument('--gpus', nargs='+', type=int, default=[1])
     parser.add_argument('--use_gpu', type=int, default=1)
 
     args = parser.parse_args()

@@ -78,7 +78,8 @@ class DataReader(object):
             reason_type = line["reason_type"]
             result_type = line["result_type"]
             type = reason_type+"#"+result_type
-            self.events[type] = len(self.events)
+            if type not in self.events:
+                self.events[type] = len(self.events)
 
 
 
