@@ -23,6 +23,7 @@ url:https://www.biendata.xyz/competition/ccks_2021_task6_2
 
 ## 运行
 - 将data.rar解压
+- 下载roberta预训练模型,文件名为roberta
 - 运行event/event_train.py进行第一部分训练
 - 运行arguemnt/argue_train.py进行第二部分训练
 
