@@ -3,6 +3,7 @@
 ## 介绍
 CCKS 2021：面向金融领域的篇章级事件抽取和事件因果关系抽取
 url:https://www.biendata.xyz/competition/ccks_2021_task6_2
+本代码的最终成绩为第十名
 
 ## 主要框架
 代码有两部分组成,event classification和arguement detection
