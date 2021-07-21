@@ -3,7 +3,7 @@
 ## 介绍
 CCKS 2021：面向金融领域的篇章级事件抽取和事件因果关系抽取
 url:https://www.biendata.xyz/competition/ccks_2021_task6_2
-本代码的最终成绩为第十名
+最终成绩第十
 
 ## 主要框架
 代码有两部分组成,event classification和arguement detection
@@ -23,7 +23,7 @@ url:https://www.biendata.xyz/competition/ccks_2021_task6_2
 
 ## 运行
 - 将data.rar解压
-- 下载roberta预训练模型,文件名为roberta
+- 在ccks2021FEE下放入roberta模型
 - 运行event/event_train.py进行第一部分训练
 - 运行arguemnt/argue_train.py进行第二部分训练
 
@@ -32,16 +32,17 @@ event_train的f1值在0.64左右
 argue_train的f1值在0.82左右
 
 ## 文件说明
--event: event classification相关代码
-|- event_train:  训练代码
-|- model:    模型
-|- event_dataReader: 数据处理代码
-|- statistics:   对多组模型结果投票
+* event: event classification相关代码
 
--arguement: arguement detection相关代码
-|- event_train:  训练代码
-|- model:    模型
-|- argu_data_reader: 数据处理代码
-|- statistics:   对多组模型结果投票
+  - event_train:  训练代码
+  - model:    模型
+  - event_dataReader: 数据处理代码
+  - statistics:   对多组模型结果投票
+
+* arguement: arguement detection相关代码
+  - event_train:  训练代码
+  - model:    模型
+  - argu_data_reader: 数据处理代码
+  - statistics:   对多组模型结果投票
 
 - evaluate: validation验证代码
