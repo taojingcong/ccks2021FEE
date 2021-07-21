@@ -33,15 +33,15 @@ argue_train的f1值在0.82左右
 
 ## 文件说明
 -event: event classification相关代码
-|-event_train:  训练代码
-|-model:    模型
-|-event_dataReader: 数据处理代码
-|-statistics:   对多组模型结果投票
+|- event_train:  训练代码
+|- model:    模型
+|- event_dataReader: 数据处理代码
+|- statistics:   对多组模型结果投票
 
 -arguement: arguement detection相关代码
-|-event_train:  训练代码
-|-model:    模型
-|-argu_data_reader: 数据处理代码
-|-statistics:   对多组模型结果投票
+|- event_train:  训练代码
+|- model:    模型
+|- argu_data_reader: 数据处理代码
+|- statistics:   对多组模型结果投票
 
 - evaluate: validation验证代码
