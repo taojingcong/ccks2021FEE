@@ -21,8 +21,9 @@ url:https://www.biendata.xyz/competition/ccks_2021_task6_2
 - 加入了负例,负例中的原因或结果其中一个和正例相同
 
 ## 运行
-运行event/event_train.py进行第一部分训练
-运行arguemnt/argue_train.py进行第二部分训练
+- 将data.rar解压
+- 运行event/event_train.py进行第一部分训练
+- 运行arguemnt/argue_train.py进行第二部分训练
 
 ## 效果
 event_train的f1值在0.64左右
